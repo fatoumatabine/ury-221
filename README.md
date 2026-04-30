@@ -31,8 +31,9 @@ PostgreSQL sera disponible sur `localhost:5433`.
 Le workflow `/.github/workflows/ci-cd.yml` fait deux choses :
 
 - execute l'installation, la generation Prisma, les migrations PostgreSQL et les tests
-- construit l'image Docker sur chaque `push` et `pull_request`
-- peut publier l'image sur GHCR lors d'un `push` sur `main` ou `master`
+- s'execute sur les branches `cicd` et `main`, ainsi que sur les Pull Requests vers `main`
+- construit l'image Docker sur chaque execution
+- publie l'image sur GHCR uniquement lors d'un `push` sur `main`
 
 ## Deploiement automatique sur Render
 
@@ -53,3 +54,8 @@ Le fichier `render.yaml` permet a Render de creer :
 6. Valider la creation du web service et de la base PostgreSQL
 
 Une fois fait, chaque push sur `main` relancera la CI GitHub, puis Render redeploiera si les checks passent.
+
+## Point important
+
+Si GitHub Actions affiche une erreur du type `account is locked due to a billing issue`, le workflow ne demarre pas du tout.
+Dans ce cas, il faut corriger le probleme dans `GitHub > Settings > Billing & Licensing` avant de pouvoir obtenir des checks verts.
