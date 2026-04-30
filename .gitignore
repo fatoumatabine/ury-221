@@ -1,0 +1,9 @@
+node_modules/
+.env
+.codex
+dist/
+coverage/
+*.log
+prisma/*.db
+prisma/*.db-journal
+docker-data/

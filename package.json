@@ -1,0 +1,35 @@
+{
+  "name": "juris-221",
+  "version": "1.0.0",
+  "description": "API de gestion de cabinet d'avocats JURIS 221",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "test": "node --test",
+    "prisma:generate": "node ./node_modules/prisma/build/index.js generate --schema prisma/schema.prisma",
+    "prisma:migrate": "node ./node_modules/prisma/build/index.js migrate dev --schema prisma/schema.prisma",
+    "prisma:deploy": "node ./node_modules/prisma/build/index.js migrate deploy --schema prisma/schema.prisma",
+    "prisma:studio": "node ./node_modules/prisma/build/index.js studio --schema prisma/schema.prisma"
+  },
+  "keywords": [
+    "express",
+    "prisma",
+    "cabinet-avocat"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "prisma": "^6.6.0"
+  }
+}

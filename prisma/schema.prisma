@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum DossierStatut {
+  OUVERT
+  EN_COURS
+  CLOS
+  ARCHIVE
+}
+
+enum AudienceStatut {
+  PLANIFIEE
+  REPORTEE
+  TERMINEE
+}
+
+model Avocat {
+  id            Int       @id @default(autoincrement())
+  prenom        String
+  nom           String
+  numeroBarreau String    @unique
+  specialite    String
+  email         String    @unique
+  telephone     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  dossiers      Dossier[]
+}
+
+model Client {
+  id        Int       @id @default(autoincrement())
+  prenom    String
+  nom       String
+  email     String    @unique
+  telephone String?
+  adresse   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  dossiers  Dossier[]
+}
+
+model Dossier {
+  id            Int           @id @default(autoincrement())
+  reference     String        @unique
+  objet         String
+  dateOuverture DateTime
+  statut        DossierStatut @default(OUVERT)
+  avocatId      Int
+  clientId      Int
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  avocat        Avocat        @relation(fields: [avocatId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  client        Client        @relation(fields: [clientId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  audiences     Audience[]
+
+  @@index([avocatId])
+  @@index([clientId])
+  @@index([statut])
+}
+
+model Audience {
+  id        Int           @id @default(autoincrement())
+  dateHeure DateTime
+  lieu      String
+  statut    AudienceStatut @default(PLANIFIEE)
+  dossierId Int
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  dossier   Dossier       @relation(fields: [dossierId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([dossierId])
+  @@index([dateHeure])
+  @@index([statut])
+}
+

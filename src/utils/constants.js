@@ -1,0 +1,18 @@
+const DOSSIER_STATUT = Object.freeze({
+  OUVERT: "OUVERT",
+  EN_COURS: "EN_COURS",
+  CLOS: "CLOS",
+  ARCHIVE: "ARCHIVE",
+});
+
+const AUDIENCE_STATUT = Object.freeze({
+  PLANIFIEE: "PLANIFIEE",
+  REPORTEE: "REPORTEE",
+  TERMINEE: "TERMINEE",
+});
+
+module.exports = {
+  DOSSIER_STATUT,
+  AUDIENCE_STATUT,
+};
+

@@ -1,0 +1,18 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: juris-221-api
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DATABASE_URL: file:./data/juris.db
+    ports:
+      - "5000:5000"
+    volumes:
+      - juris221-data:/app/prisma/data
+    restart: unless-stopped
+
+volumes:
+  juris221-data:
