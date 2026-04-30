@@ -7,7 +7,7 @@ API Express + Prisma pour la gestion d'un cabinet d'avocats.
 - Base de donnees: PostgreSQL
 - Containerisation: Docker
 - Integration continue: GitHub Actions
-- Deploiement continu: Render via `render.yaml`
+- Verification CI/CD: tests + build Docker dans GitHub Actions
 
 ## Lancer en local avec Docker
 
@@ -32,28 +32,16 @@ Le workflow `/.github/workflows/ci-cd.yml` fait deux choses :
 
 - execute l'installation, la generation Prisma, les migrations PostgreSQL et les tests
 - s'execute sur les branches `cicd` et `main`, ainsi que sur les Pull Requests vers `main`
-- construit l'image Docker sur chaque execution
-- publie l'image sur GHCR uniquement lors d'un `push` sur `main`
+- construit l'image Docker sur chaque execution pour verifier que le projet est deployable
 
-## Deploiement automatique sur Render
+## Important
 
-Le fichier `render.yaml` permet a Render de creer :
+GitHub Actions ne va pas heberger l'application.
+Avec la configuration actuelle, GitHub Actions sert uniquement a :
 
-- un web service Docker pour l'API
-- une base PostgreSQL geree
-- une variable `DATABASE_URL` branchee automatiquement sur la base Render
-- un auto-deploiement seulement quand les checks GitHub passent
-
-## Etapes finales cote plateforme
-
-1. Pousser tout le projet sur GitHub
-2. Aller sur Render
-3. Choisir `New +` puis `Blueprint`
-4. Connecter le repo GitHub `fatoumatabine/ury-221`
-5. Laisser Render lire `render.yaml`
-6. Valider la creation du web service et de la base PostgreSQL
-
-Une fois fait, chaque push sur `main` relancera la CI GitHub, puis Render redeploiera si les checks passent.
+- lancer les tests
+- verifier Prisma
+- verifier que l'image Docker se build correctement
 
 ## Point important
 
