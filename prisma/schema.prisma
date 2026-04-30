@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -65,17 +65,16 @@ model Dossier {
 }
 
 model Audience {
-  id        Int           @id @default(autoincrement())
+  id        Int            @id @default(autoincrement())
   dateHeure DateTime
   lieu      String
   statut    AudienceStatut @default(PLANIFIEE)
   dossierId Int
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  dossier   Dossier       @relation(fields: [dossierId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  dossier   Dossier        @relation(fields: [dossierId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   @@index([dossierId])
   @@index([dateHeure])
   @@index([statut])
 }
-

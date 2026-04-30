@@ -1,53 +1,67 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
+-- CreateEnum
+CREATE TYPE "DossierStatut" AS ENUM ('OUVERT', 'EN_COURS', 'CLOS', 'ARCHIVE');
+
+-- CreateEnum
+CREATE TYPE "AudienceStatut" AS ENUM ('PLANIFIEE', 'REPORTEE', 'TERMINEE');
+
 -- CreateTable
 CREATE TABLE "Avocat" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "prenom" TEXT NOT NULL,
     "nom" TEXT NOT NULL,
     "numeroBarreau" TEXT NOT NULL,
     "specialite" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "telephone" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Avocat_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Client" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "prenom" TEXT NOT NULL,
     "nom" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "telephone" TEXT,
     "adresse" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Client_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Dossier" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "reference" TEXT NOT NULL,
     "objet" TEXT NOT NULL,
-    "dateOuverture" DATETIME NOT NULL,
-    "statut" TEXT NOT NULL DEFAULT 'OUVERT',
+    "dateOuverture" TIMESTAMP(3) NOT NULL,
+    "statut" "DossierStatut" NOT NULL DEFAULT 'OUVERT',
     "avocatId" INTEGER NOT NULL,
     "clientId" INTEGER NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Dossier_avocatId_fkey" FOREIGN KEY ("avocatId") REFERENCES "Avocat" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Dossier_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Dossier_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Audience" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "dateHeure" DATETIME NOT NULL,
+    "id" SERIAL NOT NULL,
+    "dateHeure" TIMESTAMP(3) NOT NULL,
     "lieu" TEXT NOT NULL,
-    "statut" TEXT NOT NULL DEFAULT 'PLANIFIEE',
+    "statut" "AudienceStatut" NOT NULL DEFAULT 'PLANIFIEE',
     "dossierId" INTEGER NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Audience_dossierId_fkey" FOREIGN KEY ("dossierId") REFERENCES "Dossier" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Audience_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -80,3 +94,11 @@ CREATE INDEX "Audience_dateHeure_idx" ON "Audience"("dateHeure");
 -- CreateIndex
 CREATE INDEX "Audience_statut_idx" ON "Audience"("statut");
 
+-- AddForeignKey
+ALTER TABLE "Dossier" ADD CONSTRAINT "Dossier_avocatId_fkey" FOREIGN KEY ("avocatId") REFERENCES "Avocat"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Dossier" ADD CONSTRAINT "Dossier_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Audience" ADD CONSTRAINT "Audience_dossierId_fkey" FOREIGN KEY ("dossierId") REFERENCES "Dossier"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

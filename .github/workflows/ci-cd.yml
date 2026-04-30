@@ -9,6 +9,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: jurist221
+          POSTGRES_USER: jurist221
+          POSTGRES_PASSWORD: jurist221
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jurist221 -d jurist221"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout
@@ -26,19 +40,19 @@ jobs:
       - name: Generate Prisma client
         run: npm run prisma:generate
         env:
-          DATABASE_URL: file:./ci.db
+          DATABASE_URL: postgresql://jurist221:jurist221@127.0.0.1:5432/jurist221?schema=public
 
       - name: Apply Prisma migrations
         run: npm run prisma:deploy
         env:
           RUST_LOG: info
-          DATABASE_URL: file:./ci.db
+          DATABASE_URL: postgresql://jurist221:jurist221@127.0.0.1:5432/jurist221?schema=public
 
       - name: Run tests
         run: npm test
         env:
           NODE_ENV: test
-          DATABASE_URL: file:./ci.db
+          DATABASE_URL: postgresql://jurist221:jurist221@127.0.0.1:5432/jurist221?schema=public
 
   docker:
     runs-on: ubuntu-latest

@@ -1,0 +1,27 @@
+services:
+  - name: juris-221-api
+    type: web
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: main
+    autoDeployTrigger: checksPass
+    healthCheckPath: /health
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: juris-221-db
+          property: connectionString
+
+databases:
+  - name: juris-221-db
+    plan: free
+    region: frankfurt
+    databaseName: jurist221
+    user: jurist221
